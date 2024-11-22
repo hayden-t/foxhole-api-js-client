@@ -13,7 +13,8 @@
 	
 		var loopTime = 10;//seconds
 		var endpoint = 'https://war-service-live.foxholeservices.com/api';//shard1	
-		var worldTotals,dayOfWar;
+		var worldTotals,ping;
+		var ping = '+';
 	
 		function getData(){
 			$.get(endpoint+'/worldconquest/maps', function(maps){//get list of maps
@@ -37,17 +38,21 @@
 							//do thing in here like sum up icon types for each team
 							if(item.iconType == 52)mapSummary.seaports++;
 						});
-						outputMap(mapSummary);//print out result for map
-					});					
-							
+						outputMap(mapSummary);//print out result for map						
+					}).always(function(){
+						if(i == maps.length-1)setTimeout(getData, loopTime*1000);//set timer to run loop again after last map
+						
+					});		
 				});
+			}).always(function(){
+				ping = (ping == '+' ? '-':'+');//simple thing to show timer still running
 			});
 		}
 		getData();//start loop
 		
 		function outputTotals(){
 		
-			$('#totals').html('Warden Casulaties: '+worldTotals.wardenCasualties + ' ' + 'Colonial Casualties:' +worldTotals.colonialCasualties + ' Day: '+worldTotals.dayOfWar);	
+			$('#totals').html('Warden Casulaties: '+worldTotals.wardenCasualties + ' ' + 'Colonial Casualties:' +worldTotals.colonialCasualties + ' Day: '+worldTotals.dayOfWar +' '+ ping);	
 			
 		};
 		function outputMap(mapSummary){
