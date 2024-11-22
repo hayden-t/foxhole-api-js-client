@@ -40,6 +40,7 @@
 						});
 						outputMap(mapSummary);//print out result for map						
 					}).always(function(){
+						if(i == 0)$('#maps').empty();
 						if(i == maps.length-1)setTimeout(getData, loopTime*1000);//set timer to run loop again after last map
 						
 					});		
