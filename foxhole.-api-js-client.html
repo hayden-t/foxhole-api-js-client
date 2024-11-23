@@ -8,26 +8,29 @@
 <style>
 .map{height:50px;position:relative;}
 .column{display: flex;flex-direction: column;justify-content: center;flex-grow: 1;}
-#world{display:flex;background: url('worldmap_warapi.webp') no-repeat;background-size: 100% 100%;width: 450px;text-align:center;}
+#world{display:flex;background: url('worldmap_warapi.webp') no-repeat;background-size: 100% 100%;text-align:center;}
 .control{display:flex;opacity:0.9;width:80%;margin:0 auto;justify-content: space-between;}
 .control div{height:7px;}
 </style>
 <script>
-	$(document).ready(function () {//core by haydent foxholestats https://github.com/clapfoot/warapi/
-	
-		var loopTime = 30;//seconds
-		var endpoint = 'https://war-service-live.foxholeservices.com/api';//shard1	
+	//by haydent http://foxholestats.com https://github.com/clapfoot/warapi/
+	var loopTime = 30;//delay between requests inseconds
+	var worldWidth = '450px';//adjust display width
+	var apiUrl = 'https://war-service-live.foxholeservices.com/api';//shard1 api see warapi readme for other shard urls
+
+	$(document).ready(function () {
+		
 		var worldTotals,ping;
 		var ping = '+';
 	
 		function getData(){
-			$.get(endpoint+'/worldconquest/maps', function(maps){//get list of maps
+			$.get(apiUrl+'/worldconquest/maps', function(maps){//get list of maps
 			
 				worldTotals = {'colonialCasualties':0,'wardenCasualties':0, 'dayOfWar': 0};
 				
 				$.each(maps, function(i, mapName){//for each map
 
-					$.get(endpoint+'/worldconquest/warReport/'+mapName, function(report){//get war reports
+					$.get(apiUrl+'/worldconquest/warReport/'+mapName, function(report){//get war reports
 						//console.log(report);//output to look at structure
 						worldTotals.colonialCasualties += report.colonialCasualties;
 						worldTotals.wardenCasualties += report.wardenCasualties;
@@ -35,7 +38,7 @@
 						if(i == maps.length-1)outputTotals();//run after last result success
 					});		
 					
-					$.get(endpoint+'/worldconquest/maps/'+mapName+'/dynamic/public', function(report){//get dynamic data
+					$.get(apiUrl+'/worldconquest/maps/'+mapName+'/dynamic/public', function(report){//get dynamic data
 						//console.log(report);//output to look at structure
 						var mapSummary = {'mapName': mapName, 'victory':'', 'wardenTowns':0, 'colonialTowns':0};
 						
@@ -155,3 +158,6 @@
 </div>
 </body>
 </html>
+<script>
+	$('#world').css('width',worldWidth);
+</script>
